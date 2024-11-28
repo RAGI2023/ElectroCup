@@ -1,0 +1,12 @@
+CompileFlags:
+  Add: 
+    # 添加 TI 编译器工具链的库路径
+    # - -ID:/Program/ti/ccs/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/lib/src
+    - -ID:/Program/ti/ccs/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include
+    - -ID:/Program/ti/ccs/ccs/ccs_base/msp430/include
+    - -ID:/Dcoding/ccsTest/Yin
+    - -D__MSP430G2553__
+    - -xc  # 强制使用 C 语言
+
+Diagnostics:
+  Suppress: ["-Wmain"]
