@@ -1,4 +1,5 @@
 #include "msp430.h"
+#include "msp430g2553.h"
 
 #define F_CTRL0_BIT BIT1
 #define F_CTRL1_BIT BIT2
@@ -6,6 +7,8 @@
 
 #define V_CTRL0_BIT BIT4
 #define V_CTRL1_BIT BIT5
+
+#define TYPE_CTRL_BIT BIT0
 
 #define F_CTRL0_LOW P1OUT &= ~F_CTRL0_BIT
 #define F_CTRL0_HIGH P1OUT |= F_CTRL0_BIT
@@ -19,9 +22,13 @@
 #define V_CTRL1_LOW P1OUT &= ~V_CTRL1_BIT
 #define V_CTRL1_HIGH P1OUT |= V_CTRL1_BIT
 
+#define TYPE_CTRL_LOW P2OUT &= ~TYPE_CTRL_BIT
+#define TYPE_CTRL_HIGH P2OUT |= TYPE_CTRL_BIT
+
 void ctrl_init(void)
 {
     P1DIR |= F_CTRL0_BIT + F_CTRL1_BIT + F_CTRL2_BIT + V_CTRL0_BIT + V_CTRL1_BIT;
+    P2DIR |= TYPE_CTRL_BIT;
     // 频率设置为1
     F_CTRL0_LOW;
     F_CTRL1_HIGH;
@@ -29,6 +36,8 @@ void ctrl_init(void)
     // 电压设置为高
     V_CTRL0_LOW;
     V_CTRL1_LOW;
+    // 类型设置为三角波
+    TYPE_CTRL_LOW;
 }
 
 /**
@@ -101,5 +110,19 @@ void set_volt(unsigned char volt)
             break;
         default:
             break;
+    }
+}
+//0:三角波 1:正弦波
+void set_type(unsigned char type)
+{
+    if (type == 0)
+    {
+        // 三角波
+        TYPE_CTRL_LOW;
+    }
+    else
+    {
+        // 正弦波
+        TYPE_CTRL_HIGH;
     }
 }
