@@ -12,16 +12,16 @@
 
 uint16_t adc_buffer[100] = {0};
 
-extern uint16_t time_stamp;
-extern unsigned long int val, val2;
+extern uint16_t T1, T2;
+// extern uint16_t time_stamp;
 
 void main(void)
 {
-//    SMCLK 50kHz
     WDTCTL = WDTPW | WDTHOLD;       // stop watchdog timer
-//    timer_init();
-    ADC_init_intref_repeating(adc_buffer, 100);
+    timer_init();
+    // ADC_init_intref_repeating(adc_buffer, 100);
 
+    freq_init();
     initial_lcd();
 
     // button_init();
@@ -44,11 +44,14 @@ void main(void)
     // clear_screen();
     // DisplayLissajous(1, 1, 1, 3,PI/2);
     // set_res(1000);
-
-
+    FREQ_OFF;
+    lcd_deltaphi(2, 0, 1);
 
     while(1){
-        lcd_deltaphi(0, 0, adc_buffer[50] /1023.0 * 2.5);
+        // CalculateT();
+        // lcd_deltaphi(0, 0, (float)T1);
+        // lcd_deltaphi(1, 0, (float)T2);
+        
     }
 
 }

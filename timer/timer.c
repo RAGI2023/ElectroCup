@@ -2,66 +2,34 @@
 #include "stdint.h"
 // SMCLK = 1MHz
 
-uint16_t capt1 = 0;
+uint8_t flag1 = 0, flag2 = 0; //是否记录过时间
+uint16_t t11, t12; //第一个通道
+uint16_t t21, t22; //第二个通道
 
-
-#define uint unsigned int
-
-#define uchar unsigned char
-
-
-uint PerVal;
-uint PerVal2;
-unsigned long int val;
-unsigned long int val2;
+uint16_t T1 = 0, T2 = 0; //周期
 
 // 时间戳 65535max
 uint16_t time_stamp = 0;
 
+void CalculateT(void)
+{
+	T1 = t12 - t11;
+	T2 = t22 - t21;
+}
+
+uint16_t get_time_stamp(void)
+{
+	return time_stamp;
+}
+
 void timer_init(void)
 {
-    //Timer0_A3 初始化
-
-////    P3SEL |= BIT0;
-////    P3REN |= BIT0;
-////    P3OUT &= ~BIT0;
-////    P3SEL2 &= ~BIT0;
-//
-////    TA0CCTL0 = CAP + CM_1 + CCIE + SCS + CCIS_0; // TA0CCR0 Capture mode; CCIxA;
-////    TA0CCTL1 = CAP + CM_3 + CCIE + SCS + CCIS_0;
-//    TA0CCTL2 = CAP + CM_1 + CCIE + SCS + CCIS_0;
-////    // Rising edge; interrupt enable
-//    TA0CTL |= TASSEL_2 + MC_2 + TACLR + TAIE + ID_0; // SMCLK, Cont Mode; start timer
-
-
-
-//    P1DIR&=~BIT1;  //捕捉P1.1口
-//    P1REN|=BIT1;
-//    P1OUT&=~BIT1;
-//    P1SEL |= BIT1;
-    TA0CCTL0 |= CAP + CM_1 + CCIS_0 + SCS + CCIE + TAIE;//捕获模式，上升和下降都捕获，选择CCI0A，同步，捕获中断开
-    TA0CTL |= TASSEL_2 + MC_2 + TACLR; //SMCLK=1M,连续计数模式
-
-//    P1DIR&=~BIT2; //捕捉P1.2口
-//    P1REN|=BIT2;
-//    P1OUT&=~BIT2;
-//    P1SEL |= BIT2;
-//    TA0CCTL1 |= CAP + CM_3 + CCIS_0 + SCS + CCIE;//捕获模式，上升和下降都捕获，选择CCI1A，同步，捕获中断开
-//    TA0CTL |= TASSEL_2 + MC_2 + ID_0 + TACLR; //SMCLK=1M,连续计数模式
-//    _EINT();//中断起始位
-
-    P1DIR |= BIT0;
-
-    // Timer1_A3计时器初始化 时间戳
-    TA1CCR0 = 2 - 1;                //voir texte   1/1mhz * 50000  0.5s
-    TA1CCTL0 = CCIE; // enable compare interrupt
-    TA1CTL |= (TASSEL_2 | ID_0 | MC_1 + TACLR);   //source SMCLK, pas de predivision ID_0
-//    TA1CTL |= TAIE;                 //autorisation interruption TAIE
+	// Timer1_A3计时器初始化 时间戳
+	TA1CCR0 = 100 - 1;                //voir texte   1/1mhz * 50000  0.5s
+	TA1CCTL0 = CCIE; // enable compare interrupt
+	TA1CTL |= (TASSEL_2 | ID_0 | MC_1 + TACLR);   //source SMCLK, pas de predivision ID_0
+	TA1CTL |= TAIE;                 //autorisation interruption TAIE
     __enable_interrupt();
-
-
-
-    // Timer
 
 }
 
@@ -70,7 +38,6 @@ void timer_init(void)
 __interrupt void Timer_A(void)
 {
     time_stamp++;
-//    P1OUT ^= BIT1;
     TA1CTL&=~(TAIFG); //Reset the interrupt flag
 }
 
@@ -81,23 +48,46 @@ __interrupt void Timer_A(void)
 //    P1OUT |= BIT0;
 //}
 
-
-
-#pragma vector=TIMER0_A0_VECTOR
-__interrupt void TIMER0_A0_ISR(void)
-
+void freq_init(void)
 {
-    P1OUT |= BIT0;
-  switch(TA0IV)
-  {
-    case 2:
-      val = TA0CCR1 - PerVal;
-      PerVal = TA0CCR1;
+    P1DIR |= BIT0;
+    // P1OUT &= ~BIT0;
+    
+	// 1.1 1.2 输入方波
+    P1REN &= ~(BIT1 | BIT2); //  pullup
+    P1IE |= BIT1 | BIT2; // interrupt enabled
+    // P2IES |= BIT3; //  Hi-low edge
+    P1IFG &= ~(BIT1 | BIT2); // IFG cleared
 
-      break;
-    case 4:
-      val2 = TA0CCR1 - PerVal2;
-      PerVal2 = TA0CCR1;
-      break;
-  }
+    _BIS_SR(GIE); // Enable global interrupt
+
 }
+
+
+#pragma vector=PORT1_VECTOR
+__interrupt void Port_1(void)
+{
+	P1OUT ^= BIT0;
+ if (P1IFG & BIT1)
+ {
+	if(flag1){
+		t11 = time_stamp;
+		flag1 = 0;
+	}else {
+		t12 = time_stamp;
+		flag1 = 1;
+	}
+	P2IFG &= ~BIT6;
+ }else if (P1IFG & BIT2)
+ {
+    if(flag2){
+		t21 = time_stamp;
+		flag2 = 0;
+	}else {
+		t22 = time_stamp;
+		flag2 = 1;
+	}
+    P2IFG &= ~BIT7;
+ }
+}
+

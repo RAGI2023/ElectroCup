@@ -23,8 +23,8 @@ void ADC_init_intref_repeating(
               ADC10ON;     // ADC on
   ADC10CTL1 = INCH_0 +     // channel 0 = P1.0
               SHS_0 +
-              ADC10SSEL_3 + // ADC clock source = SMCLK 50kHz   ADC10OCS 5MHz
-              ADC10DIV_0 +  //   8 No prescaler (1:1)
+              ADC10SSEL_3 + // ADC clock source = SMCLK 1MHz   ADC10OCS 5MHz
+              ADC10DIV_7 +  //   8 No prescaler (1:1)
               CONSEQ_2;     // repeating single channel mode
   ADC10AE0 = BIT0;          // Enable P1.0 as analog input
   // __delay_cycles(1000);
