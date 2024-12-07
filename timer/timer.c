@@ -8,6 +8,11 @@ uint8_t index1 = 0, index2 = 0; //记录数组的索引
 uint16_t t1[2] = {0,0}; //第一个通道
 uint16_t t2[2] = {0, 0}; //第二个通道
 
+uint8_t phi_detect1 = 1; //相位差检测标志位
+uint8_t phi_detect2 = 1; //相位差检测标志位
+uint8_t t1_stamp = 0;
+uint8_t t2_stamp = 0;
+
 uint16_t T1 = 0, T2 = 0; //周期
 
 // 时间戳 65535max
@@ -24,12 +29,13 @@ void CalculateT(void)
 	T1 = t1[1] - t1[0];
 	T1 = T1 > 65535 - T1 ? 65536 - T1 : T1; 
 
-	while(!flag2 || !t2[1]);
+	while(!flag2 );
 	// T2 = t22 - t22;
 	P1IE &= ~(BIT2);
 	T2 = t2[1] - t2[0];
 	T2 = T2 > 65535 - T2 ? 65536 - T2 : T2; 
-	FREQ_ON;
+//	FREQ_ON;
+	P1IE |= BIT1;
 }
 
 void CalculateF(void)
@@ -92,6 +98,10 @@ __interrupt void Port_1(void)
 	// 
 	if (P1IFG & BIT1)
 	{
+		 if(phi_detect1){
+		 	t1_stamp = time_stamp;
+			return ;
+		 }
 		flag1 = 1;
 		t1[index1] = time_stamp;
 		// flag1 = !flag1;
@@ -102,12 +112,18 @@ __interrupt void Port_1(void)
 	}
 	if (P1IFG & BIT2)
 	{
+		 if (phi_detect2)
+		 {
+		 	t2_stamp = time_stamp;
+			return ;
+		 }
 		flag2 = 1;
 		t2[index2] = time_stamp;
 		// flag2 = !flag2;
 		index2 = (index2 + 1) % 2;
 		P1IFG &= ~BIT2;
 		P1OUT ^= BIT4;
+		P1IE &= ~(BIT2);
 	//	P1OUT ^= BIT0;
  }
 }
