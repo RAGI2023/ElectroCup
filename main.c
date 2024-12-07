@@ -1,5 +1,6 @@
 #include <msp430.h>
 #include <stdint.h>
+#include "intrinsics.h"
 #include "lcd/lcd.h"
 #include "button/button.h"
 #include "Lissajous/Lissajous.h"
@@ -10,20 +11,27 @@
 #include "timer/timer.h"
 #define PI 3.14159265358979323846
 
+#define DELAY(X) for(delay_i_ = 0; delay_i_ < X; delay_i_++) //max 65535
+
 uint16_t adc_buffer[100] = {0};
 
 extern uint16_t T1, T2;
+extern uint16_t t1[2], t2[2];
+extern double f1, f2;
 // extern uint16_t time_stamp;
+
+uint16_t delay_i_;
 
 void main(void)
 {
     WDTCTL = WDTPW | WDTHOLD;       // stop watchdog timer
+    P1DIR |= BIT0 | BIT3 | BIT4;
     timer_init();
     // ADC_init_intref_repeating(adc_buffer, 100);
 
     freq_init();
     initial_lcd();
-
+    DELAY(635);
     // button_init();
 //    P1OUT |= BIT0;
     // lcd_deltaphi(1, 0, 1);
@@ -44,14 +52,15 @@ void main(void)
     // clear_screen();
     // DisplayLissajous(1, 1, 1, 3,PI/2);
     // set_res(1000);
-    FREQ_OFF;
-    lcd_deltaphi(2, 0, 1);
-
+    // FREQ_OFF;
+    // TA1CTL &= ~TAIE;
+    lcd_uint16(3, 0, 65535);
     while(1){
-        // CalculateT();
-        // lcd_deltaphi(0, 0, (float)T1);
-        // lcd_deltaphi(1, 0, (float)T2);
-        
+        CalculateT();
+        lcd_uint16(0, 0,T1);
+        lcd_uint16(1, 0, T2);
+        lcd_uint16(3, 0, get_time_stamp());
+        DELAY(1535);
     }
 
 }
