@@ -1,4 +1,8 @@
 #include <msp430g2553.h>
+#include <stdint.h>
+
+extern uint16_t t1_stamp, time_stamp;
+extern uint8_t phi_detect2;
 
 void button_init(void)
 {
@@ -17,14 +21,20 @@ void button_init(void)
 #pragma vector=PORT2_VECTOR
 __interrupt void Port_2(void)
 {
-    
- if (P2IFG & BIT6)
- {
-    //  P1OUT |= BIT0;
-     P2IFG &= ~BIT6;
- }else if (P2IFG & BIT7)
- {
+    if (P2IFG & BIT0 && phi_detect2)
+    {
+        t1_stamp = time_stamp;
+        phi_detect2 = 0;
+        P2IFG &= ~BIT0;
+        P1OUT ^= BIT4;
+    }
+    if (P2IFG & BIT6)
+    {
+        //  P1OUT |= BIT0;
+        P2IFG &= ~BIT6;
+    }else if (P2IFG & BIT7)
+    {
     //  P1OUT &= ~BIT0;
-     P2IFG &= ~BIT7;
- }
+        P2IFG &= ~BIT7;
+    }
 }

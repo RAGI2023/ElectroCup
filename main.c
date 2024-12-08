@@ -15,11 +15,9 @@
 
 uint16_t adc_buffer[100] = {0};
 
-extern uint16_t T1, T2;
-extern uint16_t t1[2], t2[2];
-extern double f1, f2;
-extern uint16_t t1_stamp[2], t2_stamp[2];
-// extern uint16_t time_stamp;
+extern uint16_t T1;
+extern uint16_t time_stamp;
+extern uint16_t t1_stamp, t2_stamp;
 
 uint16_t delay_i_;
 
@@ -30,7 +28,7 @@ void main(void)
     timer_init();
     // ADC_init_intref_repeating(adc_buffer, 100);
 
-    freq_init();
+    freq_init(396);
     initial_lcd();
     DELAY(635);
     // button_init();
@@ -53,19 +51,12 @@ void main(void)
     // clear_screen();
     // DisplayLissajous(1, 1, 1, 3,PI/2);
     // set_res(1000);
-    // FREQ_OFF;
-    // TA1CTL &= ~TAIE;
-    // lcd_uint16(3, 0, 65535);
-    CalculateT();
-        FREQ_OFF;
-        // int16_t delta_t = (t2_stamp[0] - t1_stamp[0]);
-        uint16_t delta_t = (t2[0] - t1[0]);
-        // float delta_phi = (float)delta_t / T1 * 360;
-        lcd_uint16(0, 0,T1);
-        lcd_uint16(1, 0, T2);
-        lcd_uint16(3, 0, get_time_stamp());
-        // lcd_deltaphi(4, 0, delta_phi);
-        lcd_uint16(4, 0, delta_t);
+
+    lcd_uint16(0, 0, get_time_stamp());
+    // lcd_deltaphi(1, 0, Phi_Detect());
+    lcd_uint16(2, 0, t1_stamp);
+    lcd_uint16(3, 0, t2_stamp);
+    // lcd_deltaphi(4, 0, delta_phi);
     while(1){
         
         // FREQ_ON;

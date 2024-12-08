@@ -9,9 +9,10 @@
 
 void timer_init(void);
 uint16_t get_time_stamp(void);
-void CalculateT(void);
-void CalculateF(void);
-void freq_init(void);
+// void CalculateT(void);
+// void CalculateF(void);
+void freq_init(uint16_t T);
 uint16_t get_time_stamp(void);
+float Phi_Detect(void);
 
 #endif
