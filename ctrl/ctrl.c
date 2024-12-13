@@ -1,5 +1,9 @@
 #include "msp430.h"
 #include "msp430g2553.h"
+#include <stdint.h>
+
+// 0为正弦波，1为三角波
+uint8_t freq = 1, vpp = 1, type = 0;
 
 #define F_CTRL0_BIT BIT1
 #define F_CTRL1_BIT BIT2
@@ -29,7 +33,7 @@ void ctrl_init(void)
 {
     P1DIR |= F_CTRL0_BIT + F_CTRL1_BIT + F_CTRL2_BIT + V_CTRL0_BIT + V_CTRL1_BIT;
     P2DIR |= TYPE_CTRL_BIT;
-    // 频率设置为1
+    // 频率设置为2
     F_CTRL0_LOW;
     F_CTRL1_HIGH;
     F_CTRL2_HIGH;
@@ -49,27 +53,27 @@ void set_freq(unsigned char freq)
 {
     switch (freq) 
     {
-        case 1:
+        case 2:
             F_CTRL0_LOW;
             F_CTRL1_HIGH;
             F_CTRL2_HIGH;
             break;
-        case 2:
-            F_CTRL0_HIGH;
-            F_CTRL1_LOW;
-            F_CTRL2_HIGH;
-            break;
         case 3:
-            F_CTRL0_LOW;
+            F_CTRL0_HIGH;
             F_CTRL1_LOW;
             F_CTRL2_HIGH;
             break;
         case 4:
+            F_CTRL0_LOW;
+            F_CTRL1_LOW;
+            F_CTRL2_HIGH;
+            break;
+        case 5:
             F_CTRL0_HIGH;
             F_CTRL1_HIGH;
             F_CTRL2_LOW;
             break;
-        case 5:
+        case 6:
             F_CTRL0_LOW;
             F_CTRL1_HIGH;
             F_CTRL2_LOW;

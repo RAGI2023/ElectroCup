@@ -142,8 +142,8 @@ void initial_lcd()
 	// transfer_command_lcd(0x81);  //微调对比度  
 	// transfer_command_lcd(0x28);  //微调对比度的值，可设置范围 0x00～0x3f  
 	// transfer_command_lcd(0xa2);  //1/9 偏压比（bias）  
-	// transfer_command_lcd(0xc8);  //行扫描顺序：从上到下  
-	transfer_command_lcd(0xa1);  //列扫描顺序：从左到右  
+	transfer_command_lcd(0xc8);  //行扫描顺序：从上到下  
+	// transfer_command_lcd(0xa1);  //列扫描顺序：从左到右  
 	// transfer_command_lcd(0x40);  //起始行：第一行开始  
 	transfer_command_lcd(0xaf);  //开显示 
 }

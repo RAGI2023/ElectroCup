@@ -11,27 +11,29 @@
 #include "timer/timer.h"
 #define PI 3.14159265358979323846
 
-#define DELAY(X) for(delay_i_ = 0; delay_i_ < X; delay_i_++) //max 65535
+uint8_t res_chage = 0;
+uint16_t res = 1000;
 
 uint16_t adc_buffer[100] = {0};
 
-extern uint16_t T1;
-extern uint16_t time_stamp;
-extern uint16_t t1_stamp, t2_stamp;
-
-uint16_t delay_i_;
 
 void main(void)
 {
-    WDTCTL = WDTPW | WDTHOLD;       // stop watchdog timer
-    P1DIR |= BIT0 | BIT3 | BIT4;
-    timer_init();
+    WDTCTL = WDTPW | WDTHOLD;
+    P1DIR |= BIT0;
+    // stop watchdog timer
+    // timer_init();
     // ADC_init_intref_repeating(adc_buffer, 100);
 
-    freq_init(396);
+    // freq_init(396);
     initial_lcd();
-    DELAY(635);
-    // button_init();
+   button_init();
+     res_init();
+    ctrl_init();
+    // set_freq(2);
+
+    set_res(1000);
+    P1OUT |= BIT0;
 //    P1OUT |= BIT0;
     // lcd_deltaphi(1, 0, 1);
 
@@ -52,13 +54,19 @@ void main(void)
     // DisplayLissajous(1, 1, 1, 3,PI/2);
     // set_res(1000);
 
-    lcd_uint16(0, 0, get_time_stamp());
-    // lcd_deltaphi(1, 0, Phi_Detect());
-    lcd_uint16(2, 0, t1_stamp);
-    lcd_uint16(3, 0, t2_stamp);
+    // lcd_uint16(0, 0, get_time_stamp());
+    // lcd_uint16(2, 0, t1_stamp);
+    // lcd_uint16(3, 0, t2_stamp);
     // lcd_deltaphi(4, 0, delta_phi);
+    lcd_deltaphi(0, 0, 1.0);
     while(1){
         
+        if (res_chage){
+            set_res(res);
+            res_chage = 0;
+            lcd_uint16(1, 0, res);
+        }
+        // __delay_cycles(655);
         // FREQ_ON;
         // DELAY(1535);
     }
