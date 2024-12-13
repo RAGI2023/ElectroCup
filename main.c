@@ -38,38 +38,12 @@ void main(void)
 
     set_res(1000);
     P1OUT |= BIT0;
-//    P1OUT |= BIT0;
-    // lcd_deltaphi(1, 0, 1);
 
-    // P1OUT ^= BIT0;
-    // button_init();
-//    set_res(100);
-//    set_freq(2);
-//    set_volt(0);
-    // display_graphic_5x8(0, 0, (uchar*)font5x7);
-//    int i;
-//    for (i =0; i < 10; i++){
-    //    lcd_deltaphi(0, 0, amp/1023.0 * 2.5);
-//        __delay_cycles(100000);
-//        P1OUT |= BIT1;
-//
-//    }
-    // clear_screen();
-    // DisplayLissajous(1, 1, 1, 3,PI/2);
-    // set_res(1000);
-
-    // lcd_uint16(0, 0, get_time_stamp());
-    // lcd_uint16(2, 0, t1_stamp);
-    // lcd_uint16(3, 0, t2_stamp);
-    // lcd_deltaphi(4, 0, delta_phi);
     // lcd_uint8(0, 0, 1);
     while(1){
         
         // if (res_chage){
-        //     set_res(res);
-        //     res_chage = 0;
-        //     lcd_uint16(1, 0, res);
-        // }
+
         // clear_screen();
         DisplayLissajous(1, 1, 1, freq_times, phi[freq_times - 1]);
         // clear_screen();
