@@ -296,3 +296,17 @@ void lcd_uint16(uchar page, uchar column, uint16_t data)
 		num_col += single_col;
 	}
 }
+
+void lcd_uint8(uchar page, uchar column, uint8_t data)
+{
+	uchar single_col = 5;
+	uint16_t i = 0;
+	uchar num_col;
+	num_col = column;
+
+	for(i = 100; i > 0; i /= 10)
+	{
+		display_graphic_5x8(page, num_col, (uchar *)num[(data / i)%10]);
+		num_col += single_col;
+	}
+}

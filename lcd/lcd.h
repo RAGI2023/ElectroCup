@@ -20,6 +20,7 @@ void transfer_data_lcd(int data1);
 void display_graphic_1X8(uchar page, uchar column, uchar *dp);
 void lcd_deltaphi(uchar page, uchar column, float deltaphi);
 void lcd_uint16(uchar page, uchar column, uint16_t data);
+void lcd_uint8(uchar page, uchar column, uint8_t data);
 
 
 #endif

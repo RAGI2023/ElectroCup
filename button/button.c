@@ -1,7 +1,10 @@
 #include <msp430g2553.h>
 #include <stdint.h>
 #include "res/res.h"
+#include "ctrl/ctrl.h"
 
+extern uint8_t freq_times;
+extern uint8_t freq_change;
 extern uint8_t res_chage;
 extern uint16_t res;
 extern uint16_t t1_stamp, time_stamp;
@@ -24,17 +27,16 @@ void button_init(void)
 #pragma vector=PORT2_VECTOR
 __interrupt void Port_2(void)
 {
-    if (P2IFG & BIT0 && phi_detect2)
-    {
-        t1_stamp = time_stamp;
-        phi_detect2 = 0;
-        P2IFG &= ~BIT0;
-        P1OUT ^= BIT4;
-    }
+
     if (P2IFG & BIT6)
     {
-        res -= 50;
-        res_chage = 1;
+        freq_times++;
+        freq_change = 1;
+        if (freq_times > 5)
+        {
+            freq_times = 2;
+        }
+        set_freq(freq_times);
         //  P1OUT |= BIT0;
         P2IFG &= ~BIT6;
     }else if (P2IFG & BIT7)
