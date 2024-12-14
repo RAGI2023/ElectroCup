@@ -4,3 +4,4 @@ RemoteSystemsTempFiles
 .launches
 .metadata
 .settings
+.clangd
