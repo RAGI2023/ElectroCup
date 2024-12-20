@@ -9,7 +9,7 @@ extern uint8_t res_chage;
 extern uint16_t res;
 extern uint16_t t1_stamp, time_stamp;
 extern uint8_t phi_detect2;
-
+extern uint16_t amp;
 void button_init(void)
 {
     // P1DIR |= BIT0;
@@ -42,8 +42,12 @@ __interrupt void Port_2(void)
     }else if (P2IFG & BIT7)
     {
     //  P1OUT &= ~BIT0;
-        res += 50;
-        res_chage = 1;
+        amp++;
+        if(amp >= 4)
+        {
+            amp = 1;
+        }
+        set_volt(amp-1);
         P2IFG &= ~BIT7;
     }
 }

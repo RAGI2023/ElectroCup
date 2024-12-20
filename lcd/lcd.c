@@ -282,6 +282,40 @@ void lcd_deltaphi(uchar page, uchar column, float deltaphi)
 
 }
 
+void lcd_deltaphi_nozero(uchar page, uchar column, float deltaphi)
+{
+	uchar single_col = 5;
+	uchar *dp = (uchar*)num[(int)deltaphi];
+	uint i = 0;
+	uchar num_col, num_hundreds, num_tens, num_units, num_pointones;
+	num_col = column;
+	if (deltaphi < 0)
+	{
+		display_graphic_5x8(page, column, (uchar *)minus_sign);
+		deltaphi = -deltaphi;
+		num_col += single_col;
+	}
+	num_hundreds = (int)deltaphi / 100;
+	deltaphi = deltaphi - num_hundreds * 100;
+	num_tens = (int)deltaphi / 10;
+	num_units = (int)deltaphi % 10;
+	num_pointones = (int)(deltaphi * 10) % 10;
+	if (num_hundreds != 0)
+	{
+		display_graphic_5x8(page, num_col, (uchar *)num[num_hundreds]);
+		num_col += single_col;
+	}
+	if (num_tens != 0){
+		display_graphic_5x8(page, num_col, (uchar *)num[num_tens]);
+		num_col += single_col;
+	}
+	display_graphic_5x8(page, num_col, (uchar *)num[num_units]);
+	display_graphic_5x8(page, num_col + single_col , (uchar *)decimal_point);
+	display_graphic_5x8(page, num_col + single_col * 2, (uchar *)num[num_pointones]);
+
+
+}
+
 
 void lcd_uint16(uchar page, uchar column, uint16_t data)
 {

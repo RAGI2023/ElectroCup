@@ -92,7 +92,7 @@ void set_volt(unsigned char volt)
 {
     switch (volt) 
     {
-        case 1:
+        case 3:
         // ch0
             V_CTRL0_LOW;
             V_CTRL1_LOW;
@@ -102,14 +102,9 @@ void set_volt(unsigned char volt)
             V_CTRL0_HIGH;
             V_CTRL1_LOW;
             break;
-        case 3:
+        case 1:
         // ch2
             V_CTRL0_LOW;
-            V_CTRL1_HIGH;
-            break;
-        case 4:
-        // ch3
-            V_CTRL0_HIGH;
             V_CTRL1_HIGH;
             break;
         default:
