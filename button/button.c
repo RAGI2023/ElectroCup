@@ -45,6 +45,7 @@ __interrupt void Port_2(void)
         amp++;
         if(amp >= 4)
         {
+            P2OUT ^= BIT0;
             amp = 1;
         }
         set_volt(amp-1);
